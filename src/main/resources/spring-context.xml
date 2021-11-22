@@ -1,0 +1,37 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="logPerformance" class="cloud.dmytrominochkin.puzzle.component.LogPerformanceInterceptor" />
+
+    <bean id="arithmeticServiceBean" class="cloud.dmytrominochkin.puzzle.service.impl.ArithmeticServiceImpl"/>
+
+    <bean id="arithmeticService"
+          class="org.springframework.aop.framework.ProxyFactoryBean">
+
+        <property name="target" ref="arithmeticServiceBean" />
+
+        <property name="interceptorNames">
+            <list>
+                <value>logPerformance</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="extraFastArithmeticServiceBean" class="cloud.dmytrominochkin.puzzle.service.impl.ExtraFastArithmeticService">
+        <property name="arithmeticService" ref="arithmeticService"/>
+    </bean>
+
+    <bean id="extraFastArithmeticService"
+          class="org.springframework.aop.framework.ProxyFactoryBean">
+
+        <property name="target" ref="extraFastArithmeticServiceBean" />
+
+        <property name="interceptorNames">
+            <list>
+                <value>logPerformance</value>
+            </list>
+        </property>
+    </bean>
+</beans>
